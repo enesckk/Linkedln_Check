@@ -1,32 +1,16 @@
-export async function extractSelectors(page: any) {
-  const bannerUrl = await page.evaluate(() => {
-    const el: any = document.querySelector("img.pv-profile-sticky-header__image");
-    return (el as any)?.src || null;
-  });
+export const PHOTO_SELECTOR = 'img.pv-top-card-profile-picture__image';
+export const BANNER_SELECTOR = 'img.profile-background-image__image';
+export const HEADLINE_SELECTOR = 'div.text-body-medium.break-words';
+export const ABOUT_SELECTOR = 'section.pv-about-section span[aria-hidden="true"]';
 
-  const profilePhoto = await page.evaluate(() => {
-    const el: any = document.querySelector(".pv-top-card-profile-picture__image");
-    return (el as any)?.src || null;
-  });
+export const EXPERIENCE_SECTION = 'section#experience';
+export const EXPERIENCE_ITEMS = 'li.pvs-list__paged-list-item';
+export const EXPERIENCE_TITLE = 'span.t-bold';
+export const EXPERIENCE_COMPANY = 'span.t-14.t-normal';
 
-  const connections = await page.evaluate(() => {
-    const el: any = document.querySelector(".pv-top-card--list-bullet li span");
-    if (!el) return null;
-    const text = (el as any).innerText;
-    const num = parseInt(text);
-    return isNaN(num) ? null : num;
-  });
+export const EDUCATION_SECTION = 'section#education';
+export const EDUCATION_ITEMS = 'li.pvs-list__paged-list-item';
+export const EDUCATION_SCHOOL = 'span.t-bold';
+export const EDUCATION_DEGREE = 'span.t-14.t-normal';
 
-  // TODO: featured, endorsements, media, recommendations, activity selectors iyileştirilecek
-
-  return {
-    bannerUrl,
-    profilePhoto,
-    connections,
-    featured: [],
-    endorsements: [],
-    media: [],
-    recommendations: [],
-    activity: []
-  };
-}
+export const CONNECTIONS_SELECTOR = 'span.t-bold[aria-hidden="true"]';
