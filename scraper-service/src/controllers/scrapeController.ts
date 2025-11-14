@@ -7,14 +7,24 @@ export const scrapeController = async (req: Request, res: Response) => {
     const { url } = req.body;
 
     if (!validateUrl(url)) {
-      return res.status(400).json({ error: "Invalid LinkedIn URL" });
+      return res.status(400).json({ 
+        success: false,
+        error: "Invalid LinkedIn URL" 
+      });
     }
 
     const data = await scrapeLinkedInProfile(url);
-    return res.json(data);
+    return res.json({
+      success: true,
+      data: data
+    });
 
   } catch (err: any) {
     console.error("Scrape error:", err);
-    return res.status(500).json({ error: "Scraping failed", details: err.message });
+    return res.status(500).json({ 
+      success: false,
+      error: "Scraping failed", 
+      details: err.message 
+    });
   }
 };
