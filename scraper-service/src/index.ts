@@ -1,32 +1,21 @@
 import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import scrapeRoute from "./routes/scrapeRoute";
-
-dotenv.config();
+import { scrapeLinkedInProfile as scrapeProfile } from "./services/scrapeService";
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
-
-// Health check endpoint (no API key required)
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// API Key middleware
-app.use((req, res, next) => {
-  const key = req.headers["x-api-key"];
-  if (!key || key !== process.env.SCRAPER_API_KEY) {
-    return res.status(401).json({ error: "Unauthorized (invalid API key)" });
+app.post("/scrape", async (req, res) => {
+  try {
+    const data = await scrapeProfile(req.body.url);
+    res.json({ success: true, data });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
   }
-  next();
 });
 
-app.use("/scrape", scrapeRoute);
-
-app.listen(PORT, () => {
-  console.log(`Scraper service running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Scraper service running on port ${PORT}`));
