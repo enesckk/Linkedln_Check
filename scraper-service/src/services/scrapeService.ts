@@ -17,7 +17,20 @@ import {
 
 export async function scrapeLinkedInProfile(url: string) {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+
+  await context.addCookies([
+    {
+      name: "li_at",
+      value: process.env.LINKEDIN_LI_AT || "AQEDATttN_UBS65dAAABmmJrOLEAAAGahne8sU0AEDeWO8BYK-x-ESKupgEND7NEQFxIgL6uuV-1V-ZlOzX2FengVjxwUveRCBXCorHCJCt7SN4Z0-z-pIxhQW-9d-1bXoaB4aT-6180uOCvs2q8xOxs",
+      domain: ".www.linkedin.com",
+      path: "/",
+      httpOnly: true,
+      secure: true
+    }
+  ]);
+
+  const page = await context.newPage();
 
   try {
     await page.goto(url, { waitUntil: "networkidle" });
