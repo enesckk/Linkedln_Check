@@ -1,18 +1,8 @@
-/**
- * Scrape Routes
- * Scraping endpoint'lerini tanımlar
- */
+import { Router } from "express";
+import { scrapeController } from "../controllers/scrapeController";
 
-import { Router } from 'express'
-import { scrapeProfile } from '../controllers/scrapeController'
+const router = Router();
 
-const router = Router()
+router.post("/", scrapeController);
 
-/**
- * POST /scrape
- * LinkedIn profil scraping endpoint'i
- */
-router.post('/scrape', scrapeProfile)
-
-export default router
-
+export default router;

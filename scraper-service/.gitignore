@@ -1,31 +1,3 @@
-# Dependencies
-node_modules/
-package-lock.json
-yarn.lock
-
-# Build output
-dist/
-*.tsbuildinfo
-
-# Environment variables
+node_modules
+dist
 .env
-.env.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
-# Playwright
-.playwright/
-
