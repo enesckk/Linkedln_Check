@@ -11,6 +11,11 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
+// Health check endpoint (no API key required)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // API Key middleware
 app.use((req, res, next) => {
   const key = req.headers["x-api-key"];
