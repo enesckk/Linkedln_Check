@@ -1,5 +1,19 @@
 import { chromium } from "playwright";
-import { extractSelectors } from "../utils/selectors";
+import {
+  PHOTO_SELECTOR,
+  BANNER_SELECTOR,
+  HEADLINE_SELECTOR,
+  ABOUT_SELECTOR,
+  EXPERIENCE_SECTION,
+  EXPERIENCE_ITEMS,
+  EXPERIENCE_TITLE,
+  EXPERIENCE_COMPANY,
+  EDUCATION_SECTION,
+  EDUCATION_ITEMS,
+  EDUCATION_SCHOOL,
+  EDUCATION_DEGREE,
+  CONNECTIONS_SELECTOR
+} from '../utils/selectors';
 
 export async function scrapeLinkedInProfile(url: string) {
   const browser = await chromium.launch({ headless: true });
@@ -8,17 +22,33 @@ export async function scrapeLinkedInProfile(url: string) {
   try {
     await page.goto(url, { waitUntil: "networkidle" });
 
-    const data = await extractSelectors(page);
+    const bannerUrl = await page.evaluate((selector) => {
+      const el: any = document.querySelector(selector);
+      return (el as any)?.src || null;
+    }, BANNER_SELECTOR);
+
+    const profilePhoto = await page.evaluate((selector) => {
+      const el: any = document.querySelector(selector);
+      return (el as any)?.src || null;
+    }, PHOTO_SELECTOR);
+
+    const connections = await page.evaluate((selector) => {
+      const el: any = document.querySelector(selector);
+      if (!el) return null;
+      const text = (el as any).innerText;
+      const num = parseInt(text);
+      return isNaN(num) ? null : num;
+    }, CONNECTIONS_SELECTOR);
 
     return {
-      bannerUrl: data.bannerUrl ?? null,
-      profilePhoto: data.profilePhoto ?? null,
-      connections: data.connections ?? null,
-      featured: data.featured ?? [],
-      endorsements: data.endorsements ?? [],
-      media: data.media ?? [],
-      activity: data.activity ?? [],
-      recommendations: data.recommendations ?? [],
+      bannerUrl: bannerUrl ?? null,
+      profilePhoto: profilePhoto ?? null,
+      connections: connections ?? null,
+      featured: [],
+      endorsements: [],
+      media: [],
+      activity: [],
+      recommendations: [],
     };
 
   } catch (err) {
