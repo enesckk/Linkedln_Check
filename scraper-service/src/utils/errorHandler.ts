@@ -3,7 +3,7 @@
  * Hata yönetimi ve formatlama için yardımcı fonksiyonlar
  */
 
-import { Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
 /**
  * API hata response formatı
@@ -63,5 +63,18 @@ export function sendSuccess<T>(
   }
 
   res.status(statusCode).json(successResponse)
+}
+
+/**
+ * Express error handler middleware
+ */
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  console.error('Error:', err)
+  sendError(res, err.message || 'Internal server error', 500)
 }
 

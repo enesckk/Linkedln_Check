@@ -1,21 +1,27 @@
 import express from "express";
-import cors from "cors";
-import scraper from "./scrape";
+import scrapeRoute from "./routes/scrapeRoute";
+import { errorHandler } from "./utils/errorHandler";
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+// Middleware
 app.use(express.json());
 
+// Routes
+app.use("/", scrapeRoute);
+
+// Health check endpoint (Railway için)
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.post("/scrape", scraper);
+// Error handler
+app.use(errorHandler);
 
-// PORT'u Railway'den al
-const PORT = process.env.PORT || 8080;
-
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Scraper service running on port ${PORT}`);
 });
+
+export default app;
