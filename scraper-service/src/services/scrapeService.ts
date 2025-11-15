@@ -1,26 +1,54 @@
-import { Page } from "playwright";
-import { SELECTORS } from "../utils/selectors";
+import { chromium } from "playwright";
 
-export async function scrapeLinkedInProfile(page: Page) {
-    await page.waitForSelector("body");
+export async function scrapeLinkedInProfile(url: string) {
+  const browser = await chromium.launch({
+    headless: true
+  });
 
-    const getAttr = async (selector: string, attr: string) =>
-        await page.$eval(selector, (el, attrName) => el.getAttribute(attrName), attr).catch(() => null);
+  const context = await browser.newContext({
+    ignoreHTTPSErrors: true
+  });
 
-    const getText = async (selector: string) =>
-        await page.$eval(selector, el => el.textContent?.trim()).catch(() => null);
+  const page = await context.newPage(); // ✅ En önemli satır — gerçek Page objesi
+
+  try {
+    await page.goto(url, { waitUntil: "networkidle" });
+
+    // Profile photo
+    const profilePhoto = await page
+      .locator("img.pv-top-card-profile-picture__image")
+      .first()
+      .getAttribute("src");
+
+    // Banner
+    const bannerPhoto = await page
+      .locator("img.full-width.evi-image")
+      .first()
+      .getAttribute("src");
+
+    // Name
+    const fullName = await page
+      .locator("h1.text-heading-xlarge")
+      .first()
+      .innerText();
+
+    // Headline
+    const headline = await page
+      .locator(".text-body-medium.break-words")
+      .first()
+      .innerText();
+
+    await browser.close();
 
     return {
-        profilePhoto: await getAttr(SELECTORS.profilePhoto, "src"),
-        bannerPhoto: await getAttr(SELECTORS.bannerPhoto, "src"),
-        fullName: await getText(SELECTORS.fullName),
-        headline: await getText(SELECTORS.headline),
-        location: await getText(SELECTORS.location),
-        websites: await page.$$eval(SELECTORS.websites, els =>
-            els.map(e => e.textContent?.trim()).filter(Boolean)
-        ).catch(() => []),
-        featuredImages: await page.$$eval(SELECTORS.featured.image, els =>
-            els.map(e => (e as HTMLImageElement).src)
-        ).catch(() => [])
+      profilePhoto,
+      bannerPhoto,
+      fullName,
+      headline
     };
+
+  } catch (err) {
+    await browser.close();
+    throw err;
+  }
 }
