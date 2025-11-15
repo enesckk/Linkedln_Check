@@ -1,45 +1,19 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
-import { scrapeLinkedInProfile as scrapeProfile } from "./services/scrapeService";
+import scraper from "./scrape";
 
 const app = express();
+
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// HEALTHCHECK (Railway)
 app.get("/health", (req, res) => {
-  return res.status(200).json({ status: "ok" });
+  res.status(200).json({ status: "ok" });
 });
 
-// SCRAPE ENDPOINT
-app.post("/scrape", async (req, res) => {
-  try {
-    const { url, cookie } = req.body;
+app.post("/scrape", scraper);
 
-    if (!url) {
-      return res.status(400).json({ success: false, error: "Missing URL" });
-    }
-
-    const result = await scrapeProfile(url);
-
-    return res.status(200).json({
-      success: true,
-      data: result,
-    });
-
-  } catch (error: any) {
-    console.error("Scrape error:", error);
-    return res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// KEEP ALIVE → Railway'in container'ı durdurmaması için
-setInterval(() => {
-  console.log("⚡ keep-alive ping");
-}, 25000); // 25 saniye
-
-// SERVER START
+// PORT'u Railway'den al
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
