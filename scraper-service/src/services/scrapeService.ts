@@ -14,14 +14,12 @@ export async function scrapeLinkedInProfile(url: string) {
   // ---------------------------
   // 1️⃣ LinkedIn login cookie ekleniyor
   // ---------------------------
-  const rawCookie = process.env.LINKEDIN_COOKIE;
+  const li_at = process.env.LINKEDIN_LI_AT;
 
-  if (!rawCookie) {
-    console.error("❌ LINKEDIN_COOKIE missing in Railway env");
+  if (!li_at) {
+    console.error("❌ LINKEDIN_LI_AT missing in Railway env");
     return null;
   }
-
-  const li_at = rawCookie.replace("li_at=", "").trim();
 
   await context.addCookies([
     {
