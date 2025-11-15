@@ -5,6 +5,12 @@ export const SELECTORS = {
     banner: "img.full-width.evi-image.ember-view",
     profilePhoto: "img.pv-member-photo-modal__img",
   },
+  profilePhoto: "img.pv-member-photo-modal__img",
+  bannerPhoto: "img.full-width.evi-image.ember-view",
+  fullName: "h1.text-heading-xlarge",
+  headline: "div.text-body-medium.break-words",
+  location: "span.text-body-small.inline.t-black--light.break-words",
+  websites: "a[data-control-name='contact_website']",
 
   about: {
     container: "section.artdeco-card.pv-profile-card.break-words",
